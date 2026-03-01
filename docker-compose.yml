@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+
+  database:
+    image: postgres:16
+    container_name: todo-database
+    environment:
+      POSTGRES_DB: tododb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    volumes:
+      - todo-volume:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: todo-backend
+    ports:
+      - "8081:8081"
+    depends_on:
+      - database
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/tododb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 1234
+
+volumes:
+  todo-volume:

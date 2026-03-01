@@ -1,6 +1,7 @@
 package com.nisa.todoapp;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Todo {
@@ -9,6 +10,7 @@ public class Todo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title boş olamaz")
     private String title;
 
     private boolean completed;
