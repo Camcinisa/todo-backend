@@ -6,6 +6,8 @@ import jakarta.validation.Valid;
 import com.nisa.todoapp.dto.CreateTodoRequest;
 import com.nisa.todoapp.dto.UpdateTodoRequest;
 import com.nisa.todoapp.dto.TodoResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/todos")
@@ -18,10 +20,13 @@ public class TodoController {
     }
 
     @GetMapping
-    public List<TodoResponse> getAll() {
-        return service.getAll();
+    public Page<TodoResponse> getAll(
+            @RequestParam(required = false) Boolean completed,
+            @RequestParam(required = false) String title,
+            Pageable pageable
+    ) {
+        return service.getAll(completed, title, pageable);
     }
-
     @PostMapping
     public TodoResponse create(@Valid @RequestBody CreateTodoRequest request) {
         return service.create(request);

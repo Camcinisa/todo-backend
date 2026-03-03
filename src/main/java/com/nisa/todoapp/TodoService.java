@@ -6,6 +6,9 @@ import com.nisa.todoapp.dto.CreateTodoRequest;
 import com.nisa.todoapp.dto.UpdateTodoRequest;
 import com.nisa.todoapp.dto.TodoResponse;
 import com.nisa.todoapp.exception.TodoNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 
 @Service
 public class TodoService {
@@ -16,16 +19,25 @@ public class TodoService {
         this.repository = repository;
     }
 
-    public List<TodoResponse> getAll() {
-        return repository.findAll()
-                .stream()
-                .map(todo -> new TodoResponse(
-                        todo.getId(),
-                        todo.getTitle(),
-                        todo.isCompleted()
-                ))
-                .toList();
+    public Page<TodoResponse> getAll(Boolean completed, String title, Pageable pageable) {
+
+        Page<Todo> todoPage;
+
+        if (completed != null) {
+            todoPage = repository.findByCompleted(completed, pageable);
+        } else if (title != null && !title.isBlank()) {
+            todoPage = repository.findByTitleContainingIgnoreCase(title, pageable);
+        } else {
+            todoPage = repository.findAll(pageable);
+        }
+
+        return todoPage.map(todo -> new TodoResponse(
+                todo.getId(),
+                todo.getTitle(),
+                todo.isCompleted()
+        ));
     }
+
 
     public TodoResponse create(CreateTodoRequest request) {
 
