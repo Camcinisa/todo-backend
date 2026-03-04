@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/todos")
+@CrossOrigin(origins = "http://localhost:5173")
 public class TodoController {
 
     private final TodoService service;
